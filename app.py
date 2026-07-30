@@ -35,6 +35,55 @@ MESES = [
     "Dezembro",
 ]
 
+import re
+import unicodedata
+
+def corresponde(busca, nome):
+
+    busca = normalizar(busca).split()
+    nome = normalizar(nome).split()
+
+    indice = 0
+
+    for palavra_busca in busca:
+
+        encontrado = False
+
+        while indice < len(nome):
+
+            if nome[indice].startswith(palavra_busca):
+                encontrado = True
+                indice += 1
+                break
+
+            indice += 1
+
+        if not encontrado:
+            return False
+
+    return True
+def normalizar(texto: str) -> str:
+
+    texto = unicodedata.normalize(
+        "NFKD",
+        texto
+    )
+
+    texto = "".join(
+        c
+        for c in texto
+        if not unicodedata.combining(c)
+    )
+
+    texto = texto.lower()
+
+    texto = re.sub(
+        r"\s+",
+        " ",
+        texto
+    )
+
+    return texto.strip()
 
 # =====================================================
 # SESSION
@@ -75,25 +124,50 @@ if not servidores:
 
     st.stop()
 
-opcoes = {
-    servidor["nome"]: servidor["id"]
-    for servidor in servidores
-}
-
-nomes = list(opcoes.keys())
-
-if "servidor" not in st.session_state:
-
-    st.session_state.servidor = nomes[0]
-
-nome_servidor = st.selectbox(
-    "👤 Servidor",
-    options=nomes,
-    key="servidor"
+nome_digitado = st.text_input(
+    "👤 Digite seu nome",
+    placeholder="Ex.: Eduardo Júnior"
 )
 
-servidor_id = opcoes[nome_servidor]
+servidor = None
 
+if nome_digitado:
+
+    busca = normalizar(nome_digitado)
+
+    encontrados = [
+        s
+        for s in servidores
+        if corresponde(
+            nome_digitado,
+            s["nome"]
+        )
+    ]
+
+    if len(encontrados) == 1:
+
+        servidor = encontrados[0]
+
+        st.success(
+            f"Bem-vindo(a), {servidor['nome']}."
+        )
+
+    elif len(encontrados) > 1:
+
+        st.warning(
+            "Encontramos mais de um servidor. Digite mais algumas letras."
+        )
+
+    else:
+
+        st.error(
+            "Servidor não encontrado."
+        )
+
+if servidor is None:
+    st.stop()
+
+servidor_id = servidor["id"]        
 
 # =====================================================
 # RESET AO TROCAR SERVIDOR
@@ -110,7 +184,7 @@ if st.session_state.ultimo_servidor != servidor_id:
 # =====================================================
 
 st.caption(
-    f"Selecione até {config['max_dias_por_servidor']} dias no calendário. Toque novamente em um dia seu para remover."
+    "Selecione pelo menos 2 dias no calendário. Você pode escolher quantos dias desejar. Toque novamente em um dia seu para remover."
 )
 
 
@@ -223,7 +297,7 @@ else:
     )
 
 st.caption(
-    f"{len(escolhas)} de {config['max_dias_por_servidor']} dias escolhidos"
+    f"{len(escolhas)} dia(s) escolhido(s)"
 )
 
 st.divider()

@@ -14,10 +14,16 @@ class EscalaService:
     # CONFIGURAÇÃO
     # =====================================================
 
+    def __init__(self):
+        self._config = None
+
     @property
     def config(self):
-        return configuracoes.obter().data
 
+        if self._config is None:
+            self._config = configuracoes.obter().data
+
+        return self._config
     @property
     def bloqueado(self):
         return self.config["bloqueado"]
@@ -99,11 +105,6 @@ class EscalaService:
                 "Dia já escolhido."
             )
 
-        if len(escolhas) >= self.config["max_dias_por_servidor"]:
-
-            raise ValueError(
-                "Limite máximo atingido."
-            )
 
     # =====================================================
     # AÇÕES
@@ -151,10 +152,10 @@ class EscalaService:
             servidor_id
         )
 
-        if len(escolhas) != self.config["max_dias_por_servidor"]:
+        if len(escolhas) < 2:
 
             raise ValueError(
-                f"Selecione os {self.config['max_dias_por_servidor']} dias antes de confirmar."
+                "Selecione pelo menos 2 dias antes de confirmar."
             )
 
         for escolha in escolhas:

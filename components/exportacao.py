@@ -520,24 +520,19 @@ class Exportacao:
                         fundo = LARANJA
                         borda = LARANJA_BORDA
 
-                    pdf.setFillColor(
-                        fundo
-                    )
+                    pdf.setFillColor(black)
 
-                    pdf.setStrokeColor(
-                        borda
-                    )
-
-                    raio = max(1.5, card_altura / 4)
-
-                    pdf.roundRect(
-                        x + 3,
-                        yy - card_altura,
-                        largura_coluna - 6,
-                        card_altura,
-                        raio,
-                        fill=1,
-                        stroke=1
+                    if confirmado:
+                        marcador = "✓"
+                    else:
+                        marcador = "○"
+                    
+                    pdf.setFont("Helvetica", fonte)
+                    
+                    pdf.drawString(
+                        x + 6,
+                        yy - fonte,
+                        f"{marcador} {texto}"
                     )
 
                     pdf.setFillColor(
@@ -557,10 +552,7 @@ class Exportacao:
                         texto
                     )
 
-                    yy -= (
-                        card_altura
-                        + espacamento
-                    )
+                    yy -= fonte + 2
 
                     exibidos += 1
 

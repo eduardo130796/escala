@@ -430,7 +430,29 @@ class Exportacao:
                     # Quebra automática
                     # ------------------------------
 
-                    largura_texto = largura_coluna - 16
+                    largura_texto = largura_coluna - (padding * 2)
+
+                    texto = ""
+    
+                    for palavra in nome.split():
+    
+                        teste = (
+                            texto
+                            + " "
+                            + palavra
+                        ).strip()
+    
+                        if stringWidth(
+                            teste,
+                            "Helvetica",
+                            fonte
+                        ) < largura_texto:
+    
+                            texto = teste
+    
+                        else:
+    
+                            break
 
                     pdf.setFillColor(black)
 

@@ -528,12 +528,14 @@ class Exportacao:
                         borda
                     )
 
+                    raio = max(1.5, card_altura / 4)
+
                     pdf.roundRect(
                         x + 3,
                         yy - card_altura,
                         largura_coluna - 6,
                         card_altura,
-                        2,
+                        raio,
                         fill=1,
                         stroke=1
                     )
@@ -547,7 +549,7 @@ class Exportacao:
                         fonte
                     )
 
-                    texto_y = yy - ((card_altura - fonte) / 2) - 1
+                    texto_y = yy - card_altura + (card_altura * 0.70)
 
                     pdf.drawString(
                         x + padding,

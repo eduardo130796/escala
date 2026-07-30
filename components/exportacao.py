@@ -430,7 +430,7 @@ class Exportacao:
                     # Quebra automática
                     # ------------------------------
 
-                    largura_texto = largura_coluna - (padding * 2)
+                    largura_texto = largura_coluna - 16
 
                     texto = ""
     

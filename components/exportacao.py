@@ -75,45 +75,6 @@ class Exportacao:
 
         return arquivo
 
-
-    @staticmethod
-    def obter_layout_cartao(qtd_registros):
-        """
-        Retorna automaticamente o layout dos cartões
-        conforme a quantidade de servidores no dia.
-        """
-
-        if qtd_registros <= 2:
-            return {
-                "altura": 14,
-                "fonte": 7,
-                "espacamento": 3,
-                "padding": 8
-            }
-
-        elif qtd_registros <= 4:
-            return {
-                "altura": 11,
-                "fonte": 6,
-                "espacamento": 2,
-                "padding": 7
-            }
-
-        elif qtd_registros <= 6:
-            return {
-                "altura": 9,
-                "fonte": 5.5,
-                "espacamento": 1,
-                "padding": 6
-            }
-
-        else:
-            return {
-                "altura": 8,
-                "fonte": 5,
-                "espacamento": 1,
-                "padding": 5
-            }
             
     @staticmethod
     def gerar_pdf(
@@ -533,23 +494,6 @@ class Exportacao:
                         x + 6,
                         yy - fonte,
                         f"{marcador} {texto}"
-                    )
-
-                    pdf.setFillColor(
-                        black
-                    )
-
-                    pdf.setFont(
-                        "Helvetica",
-                        fonte
-                    )
-
-                    texto_y = yy - card_altura + (card_altura * 0.70)
-
-                    pdf.drawString(
-                        x + padding,
-                        texto_y,
-                        texto
                     )
 
                     yy -= fonte + 2

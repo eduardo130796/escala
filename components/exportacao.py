@@ -419,7 +419,7 @@ class Exportacao:
 
                 for registro in registros:
 
-                   if yy - fonte < limite:
+                    if yy - fonte < limite:
                        break
 
                     nome = registro["nome"]
@@ -441,11 +441,7 @@ class Exportacao:
                     
                     pdf.setFont("Helvetica", fonte)
                     
-                    pdf.drawString(
-                        x + 6,
-                        yy - fonte,
-                        f"{marcador} {texto}"
-                    )
+                    
 
                     yy -= fonte + 2
 

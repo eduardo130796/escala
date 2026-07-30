@@ -74,7 +74,47 @@ class Exportacao:
         arquivo.seek(0)
 
         return arquivo
-    
+
+
+    @staticmethod
+    def obter_layout_cartao(qtd_registros):
+        """
+        Retorna automaticamente o layout dos cartões
+        conforme a quantidade de servidores no dia.
+        """
+
+        if qtd_registros <= 2:
+            return {
+                "altura": 14,
+                "fonte": 7,
+                "espacamento": 3,
+                "padding": 8
+            }
+
+        elif qtd_registros <= 4:
+            return {
+                "altura": 11,
+                "fonte": 6,
+                "espacamento": 2,
+                "padding": 7
+            }
+
+        elif qtd_registros <= 6:
+            return {
+                "altura": 9,
+                "fonte": 5.5,
+                "espacamento": 1,
+                "padding": 6
+            }
+
+        else:
+            return {
+                "altura": 8,
+                "fonte": 5,
+                "espacamento": 1,
+                "padding": 5
+            }
+            
     @staticmethod
     def gerar_pdf(
         escolhas,
@@ -400,24 +440,39 @@ class Exportacao:
                     []
                 )
 
-                card_altura = 14
+                layout = Exportacao.obter_layout_cartao(len(registros))
 
-                espacamento = 3
-
+                card_altura = layout["altura"]
+                fonte = layout["fonte"]
+                espacamento = layout["espacamento"]
+                padding = layout["padding"]
+                
                 yy = (
                     y
                     + altura_linha
                     - 28
                 )
-
-                limite = y + 5
+                
+                limite = y + 4
 
                 exibidos = 0
 
                 for registro in registros:
 
                     if yy - card_altura < limite:
-                        break
+
+                        # tenta reduzir ainda mais os cartões
+                        if card_altura > 6:
+                    
+                            card_altura -= 1
+                    
+                            fonte = max(4.5, fonte - 0.5)
+                    
+                            espacamento = 0
+                    
+                        else:
+                    
+                            break
 
                     nome = registro["nome"]
 
@@ -427,7 +482,7 @@ class Exportacao:
                     # Quebra automática
                     # ------------------------------
 
-                    largura_texto = largura_coluna - 16
+                    largura_texto = largura_coluna - (padding * 2)
 
                     texto = ""
 
@@ -442,7 +497,7 @@ class Exportacao:
                         if stringWidth(
                             teste,
                             "Helvetica",
-                            7
+                            fonte
                         ) < largura_texto:
 
                             texto = teste
@@ -474,11 +529,11 @@ class Exportacao:
                     )
 
                     pdf.roundRect(
-                        x + 4,
+                        x + 3,
                         yy - card_altura,
-                        largura_coluna - 8,
+                        largura_coluna - 6,
                         card_altura,
-                        3,
+                        2,
                         fill=1,
                         stroke=1
                     )
@@ -489,12 +544,14 @@ class Exportacao:
 
                     pdf.setFont(
                         "Helvetica",
-                        7
+                        fonte
                     )
 
+                    texto_y = yy - ((card_altura - fonte) / 2) - 1
+
                     pdf.drawString(
-                        x + 8,
-                        yy - 10,
+                        x + padding,
+                        texto_y,
                         texto
                     )
 

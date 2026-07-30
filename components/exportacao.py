@@ -396,44 +396,31 @@ class Exportacao:
                 # Área dos servidores
                 # ------------------------------------------
 
-                registros = agenda.get(
-                    dia,
-                    []
-                )
-
-                layout = Exportacao.obter_layout_cartao(len(registros))
-
-                card_altura = layout["altura"]
-                fonte = layout["fonte"]
-                espacamento = layout["espacamento"]
-                padding = layout["padding"]
+               
                 
-                yy = (
-                    y
-                    + altura_linha
-                    - 28
-                )
-                
-                limite = y + 4
+                registros = agenda.get(dia, [])
 
+                qtd = len(registros)
+                
+                if qtd <= 2:
+                    fonte = 7
+                elif qtd <= 4:
+                    fonte = 6
+                elif qtd <= 6:
+                    fonte = 5.5
+                else:
+                    fonte = 5
+                
+                yy = y + altura_linha - 28
+                
+                limite = y + 5
+                
                 exibidos = 0
 
                 for registro in registros:
 
-                    if yy - card_altura < limite:
-
-                        # tenta reduzir ainda mais os cartões
-                        if card_altura > 6:
-                    
-                            card_altura -= 1
-                    
-                            fonte = max(4.5, fonte - 0.5)
-                    
-                            espacamento = 0
-                    
-                        else:
-                    
-                            break
+                   if yy - fonte < limite:
+                       break
 
                     nome = registro["nome"]
 
@@ -443,43 +430,7 @@ class Exportacao:
                     # Quebra automática
                     # ------------------------------
 
-                    largura_texto = largura_coluna - (padding * 2)
-
-                    texto = ""
-
-                    for palavra in nome.split():
-
-                        teste = (
-                            texto
-                            + " "
-                            + palavra
-                        ).strip()
-
-                        if stringWidth(
-                            teste,
-                            "Helvetica",
-                            fonte
-                        ) < largura_texto:
-
-                            texto = teste
-
-                        else:
-
-                            break
-
-                    # ------------------------------
-                    # Cores do cartão
-                    # ------------------------------
-
-                    if confirmado:
-
-                        fundo = VERDE
-                        borda = VERDE_BORDA
-
-                    else:
-
-                        fundo = LARANJA
-                        borda = LARANJA_BORDA
+                    largura_texto = largura_coluna - 16
 
                     pdf.setFillColor(black)
 
